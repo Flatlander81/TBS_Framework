@@ -16,7 +16,7 @@ namespace TBS.Combat
 
         private void Awake()
         {
-            gridManager = FindObjectOfType<GridManager>();
+            gridManager = FindFirstObjectByType<GridManager>();
         }
 
         /// <summary>
