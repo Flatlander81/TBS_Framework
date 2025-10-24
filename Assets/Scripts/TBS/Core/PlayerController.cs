@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using TBS.Units;
 using TBS.Grid;
 using TBS.Combat;
@@ -41,23 +42,38 @@ namespace TBS.Core
 
         private void HandleInput()
         {
-            if (Input.GetMouseButtonDown(0)) // Left click
+            var mouse = Mouse.current;
+            var keyboard = Keyboard.current;
+
+            if (mouse != null)
             {
-                HandleLeftClick();
+                if (mouse.leftButton.wasPressedThisFrame) // Left click
+                {
+                    HandleLeftClick();
+                }
+                else if (mouse.rightButton.wasPressedThisFrame) // Right click
+                {
+                    HandleRightClick();
+                }
             }
-            else if (Input.GetMouseButtonDown(1)) // Right click
+
+            if (keyboard != null)
             {
-                HandleRightClick();
-            }
-            else if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                DeselectUnit();
+                if (keyboard.escapeKey.wasPressedThisFrame)
+                {
+                    DeselectUnit();
+                }
             }
         }
 
         private void HandleLeftClick()
         {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            var mouse = Mouse.current;
+            if (mouse == null)
+                return;
+
+            Vector2 mousePos = mouse.position.ReadValue();
+            Ray ray = mainCamera.ScreenPointToRay(mousePos);
 
             switch (currentState)
             {

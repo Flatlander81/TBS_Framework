@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TBS.Core
 {
@@ -58,13 +59,17 @@ namespace TBS.Core
         private void Update()
         {
             // Quick save/load shortcuts
-            if (Input.GetKeyDown(KeyCode.F5))
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                SaveGame();
-            }
-            if (Input.GetKeyDown(KeyCode.F9))
-            {
-                LoadGame();
+                if (keyboard.f5Key.wasPressedThisFrame)
+                {
+                    SaveGame();
+                }
+                if (keyboard.f9Key.wasPressedThisFrame)
+                {
+                    LoadGame();
+                }
             }
         }
 

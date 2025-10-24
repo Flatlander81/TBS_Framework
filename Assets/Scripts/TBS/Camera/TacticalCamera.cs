@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace TBS.Camera
 {
@@ -71,41 +72,50 @@ namespace TBS.Camera
             Vector3 moveDirection = Vector3.zero;
 
             // WASD keys
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                moveDirection += Vector3.forward;
-            }
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-            {
-                moveDirection += Vector3.back;
-            }
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-            {
-                moveDirection += Vector3.left;
-            }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            {
-                moveDirection += Vector3.right;
+                if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed)
+                {
+                    moveDirection += Vector3.forward;
+                }
+                if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed)
+                {
+                    moveDirection += Vector3.back;
+                }
+                if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed)
+                {
+                    moveDirection += Vector3.left;
+                }
+                if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed)
+                {
+                    moveDirection += Vector3.right;
+                }
             }
 
             // Screen edge panning
             if (useScreenEdgePan)
             {
-                if (Input.mousePosition.y >= Screen.height - panBorderThickness)
+                var mouse = Mouse.current;
+                if (mouse != null)
                 {
-                    moveDirection += Vector3.forward;
-                }
-                if (Input.mousePosition.y <= panBorderThickness)
-                {
-                    moveDirection += Vector3.back;
-                }
-                if (Input.mousePosition.x >= Screen.width - panBorderThickness)
-                {
-                    moveDirection += Vector3.right;
-                }
-                if (Input.mousePosition.x <= panBorderThickness)
-                {
-                    moveDirection += Vector3.left;
+                    Vector2 mousePos = mouse.position.ReadValue();
+                    if (mousePos.y >= Screen.height - panBorderThickness)
+                    {
+                        moveDirection += Vector3.forward;
+                    }
+                    if (mousePos.y <= panBorderThickness)
+                    {
+                        moveDirection += Vector3.back;
+                    }
+                    if (mousePos.x >= Screen.width - panBorderThickness)
+                    {
+                        moveDirection += Vector3.right;
+                    }
+                    if (mousePos.x <= panBorderThickness)
+                    {
+                        moveDirection += Vector3.left;
+                    }
                 }
             }
 
@@ -125,7 +135,11 @@ namespace TBS.Camera
 
         private void HandleZoom()
         {
-            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            var mouse = Mouse.current;
+            if (mouse == null)
+                return;
+
+            float scroll = mouse.scroll.ReadValue().y / 120f; // Normalize scroll value
 
             if (Mathf.Abs(scroll) > 0.01f)
             {
@@ -150,14 +164,18 @@ namespace TBS.Camera
             if (!enableRotation)
                 return;
 
-            // Q and E for rotation
-            if (Input.GetKey(KeyCode.Q))
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                transform.Rotate(Vector3.up, -rotationSpeed * Time.deltaTime, Space.World);
-            }
-            if (Input.GetKey(KeyCode.E))
-            {
-                transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime, Space.World);
+                // Q and E for rotation
+                if (keyboard.qKey.isPressed)
+                {
+                    transform.Rotate(Vector3.up, -rotationSpeed * Time.deltaTime, Space.World);
+                }
+                if (keyboard.eKey.isPressed)
+                {
+                    transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime, Space.World);
+                }
             }
 
             // Lock tilt angle
