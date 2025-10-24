@@ -25,9 +25,9 @@ namespace TBS.AI
 
         private void Start()
         {
-            turnManager = FindObjectOfType<TurnManager>();
-            gridManager = FindObjectOfType<GridManager>();
-            combatSystem = FindObjectOfType<CombatSystem>();
+            turnManager = FindFirstObjectByType<TurnManager>();
+            gridManager = FindFirstObjectByType<GridManager>();
+            combatSystem = FindFirstObjectByType<CombatSystem>();
 
             // Subscribe to turn phase changes
             GameEvents.OnTurnPhaseChanged += OnTurnPhaseChanged;

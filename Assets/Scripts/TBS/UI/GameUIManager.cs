@@ -35,7 +35,7 @@ namespace TBS.UI
 
         private void Start()
         {
-            turnManager = FindObjectOfType<TurnManager>();
+            turnManager = FindFirstObjectByType<TurnManager>();
 
             // Subscribe to events
             GameEvents.OnTurnPhaseChanged += UpdateTurnPhase;

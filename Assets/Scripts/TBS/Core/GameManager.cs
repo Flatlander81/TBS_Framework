@@ -36,14 +36,14 @@ namespace TBS.Core
             Instance = this;
 
             // Auto-find components if not assigned
-            if (gridManager == null) gridManager = FindObjectOfType<Grid.GridManager>();
-            if (turnManager == null) turnManager = FindObjectOfType<TurnManager>();
-            if (combatSystem == null) combatSystem = FindObjectOfType<Combat.CombatSystem>();
-            if (playerController == null) playerController = FindObjectOfType<PlayerController>();
-            if (enemyAI == null) enemyAI = FindObjectOfType<AI.EnemyAI>();
-            if (gameStateManager == null) gameStateManager = FindObjectOfType<GameStateManager>();
-            if (uiManager == null) uiManager = FindObjectOfType<UI.GameUIManager>();
-            if (tacticalCamera == null) tacticalCamera = FindObjectOfType<TBS.Camera.TacticalCamera>();
+            if (gridManager == null) gridManager = FindFirstObjectByType<Grid.GridManager>();
+            if (turnManager == null) turnManager = FindFirstObjectByType<TurnManager>();
+            if (combatSystem == null) combatSystem = FindFirstObjectByType<Combat.CombatSystem>();
+            if (playerController == null) playerController = FindFirstObjectByType<PlayerController>();
+            if (enemyAI == null) enemyAI = FindFirstObjectByType<AI.EnemyAI>();
+            if (gameStateManager == null) gameStateManager = FindFirstObjectByType<GameStateManager>();
+            if (uiManager == null) uiManager = FindFirstObjectByType<UI.GameUIManager>();
+            if (tacticalCamera == null) tacticalCamera = FindFirstObjectByType<TBS.Camera.TacticalCamera>();
 
             ValidateSystems();
         }

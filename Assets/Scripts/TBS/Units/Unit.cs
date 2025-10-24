@@ -52,14 +52,14 @@ namespace TBS.Units
 
         private void Start()
         {
-            gridManager = FindObjectOfType<GridManager>();
+            gridManager = FindFirstObjectByType<GridManager>();
             if (gridManager != null)
             {
                 UpdateGridPosition(gridPosition);
             }
 
             // Register with turn manager
-            Core.TurnManager turnManager = FindObjectOfType<Core.TurnManager>();
+            Core.TurnManager turnManager = FindFirstObjectByType<Core.TurnManager>();
             if (turnManager != null)
             {
                 if (faction == UnitFaction.Player)

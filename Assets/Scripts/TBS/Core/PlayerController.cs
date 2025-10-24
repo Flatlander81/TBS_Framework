@@ -26,9 +26,9 @@ namespace TBS.Core
             if (mainCamera == null)
                 mainCamera = UnityEngine.Camera.main;
 
-            gridManager = FindObjectOfType<GridManager>();
-            turnManager = FindObjectOfType<TurnManager>();
-            combatSystem = FindObjectOfType<CombatSystem>();
+            gridManager = FindFirstObjectByType<GridManager>();
+            turnManager = FindFirstObjectByType<TurnManager>();
+            combatSystem = FindFirstObjectByType<CombatSystem>();
         }
 
         private void Update()

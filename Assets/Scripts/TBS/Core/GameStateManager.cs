@@ -16,8 +16,8 @@ namespace TBS.Core
 
         private void Start()
         {
-            turnManager = FindObjectOfType<TurnManager>();
-            gridManager = FindObjectOfType<Grid.GridManager>();
+            turnManager = FindFirstObjectByType<TurnManager>();
+            gridManager = FindFirstObjectByType<Grid.GridManager>();
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace TBS.Core
             }
 
             // Capture unit states
-            Unit[] allUnits = FindObjectsOfType<Unit>();
+            Unit[] allUnits = FindObjectsByType<Unit>(FindObjectsSortMode.None);
             state.unitStates = new List<UnitState>();
 
             foreach (Unit unit in allUnits)

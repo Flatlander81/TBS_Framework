@@ -33,7 +33,7 @@ namespace TBS.Utils
         private void Start()
         {
             if (gridManager == null)
-                gridManager = FindObjectOfType<GridManager>();
+                gridManager = FindFirstObjectByType<GridManager>();
 
             SpawnAllUnits();
         }
@@ -127,7 +127,7 @@ namespace TBS.Utils
                 unitColor = faction == UnitFaction.Player ? Color.blue : Color.red
             };
 
-            UnitSpawner spawner = FindObjectOfType<UnitSpawner>();
+            UnitSpawner spawner = FindFirstObjectByType<UnitSpawner>();
             if (spawner == null)
             {
                 GameObject spawnerObj = new GameObject("UnitSpawner");
