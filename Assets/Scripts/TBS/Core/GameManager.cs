@@ -20,7 +20,7 @@ namespace TBS.Core
         [SerializeField] private UI.GameUIManager uiManager;
 
         [Header("Camera")]
-        [SerializeField] private Camera.TacticalCamera tacticalCamera;
+        [SerializeField] private TBS.Camera.TacticalCamera tacticalCamera;
 
         public static GameManager Instance { get; private set; }
 
@@ -43,7 +43,7 @@ namespace TBS.Core
             if (enemyAI == null) enemyAI = FindObjectOfType<AI.EnemyAI>();
             if (gameStateManager == null) gameStateManager = FindObjectOfType<GameStateManager>();
             if (uiManager == null) uiManager = FindObjectOfType<UI.GameUIManager>();
-            if (tacticalCamera == null) tacticalCamera = FindObjectOfType<Camera.TacticalCamera>();
+            if (tacticalCamera == null) tacticalCamera = FindObjectOfType<TBS.Camera.TacticalCamera>();
 
             ValidateSystems();
         }

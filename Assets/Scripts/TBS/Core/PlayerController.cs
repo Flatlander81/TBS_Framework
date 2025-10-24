@@ -11,7 +11,7 @@ namespace TBS.Core
     public class PlayerController : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Camera mainCamera;
+        [SerializeField] private UnityEngine.Camera mainCamera;
         [SerializeField] private LayerMask tileLayer;
         [SerializeField] private LayerMask unitLayer;
 
@@ -24,7 +24,7 @@ namespace TBS.Core
         private void Start()
         {
             if (mainCamera == null)
-                mainCamera = Camera.main;
+                mainCamera = UnityEngine.Camera.main;
 
             gridManager = FindObjectOfType<GridManager>();
             turnManager = FindObjectOfType<TurnManager>();
