@@ -30,9 +30,13 @@ namespace TBS.Units
         [SerializeField] private Vector2Int gridPosition;
         [SerializeField] private int currentActionPoints = 2;
 
+        [Header("Movement Settings")]
+        [SerializeField] private float movementSpeed = 5f; // Units per second
+
         private GridManager gridManager;
         private GridTile currentTile;
         private bool isSelected = false;
+        private bool isMoving = false;
 
         // Properties
         public string UnitName => unitName;
@@ -45,6 +49,7 @@ namespace TBS.Units
         public WeaponData EquippedWeapon => equippedWeapon;
         public bool IsAlive => currentHealth > 0;
         public bool IsSelected => isSelected;
+        public bool IsMoving => isMoving;
 
         // Calculated Properties
         public int TotalAccuracy => baseAccuracy + (equippedWeapon != null ? equippedWeapon.AccuracyModifier : 0);
@@ -100,6 +105,53 @@ namespace TBS.Units
         }
 
         /// <summary>
+        /// Coroutine that smoothly animates the unit along a path.
+        /// </summary>
+        private System.Collections.IEnumerator MoveAlongPathCoroutine(List<GridTile> path, Vector2Int oldPosition, Vector2Int targetPosition, int actionPointCost)
+        {
+            isMoving = true;
+
+            // Move through each tile in the path
+            for (int i = 0; i < path.Count; i++)
+            {
+                GridTile targetTile = path[i];
+                Vector3 startPosition = transform.position;
+                Vector3 endPosition = targetTile.GetWorldPosition() + Vector3.up * 0.5f;
+                float journeyLength = Vector3.Distance(startPosition, endPosition);
+                float startTime = Time.time;
+
+                // Smoothly move to this tile
+                while (transform.position != endPosition)
+                {
+                    float distanceCovered = (Time.time - startTime) * movementSpeed;
+                    float fractionOfJourney = distanceCovered / journeyLength;
+                    transform.position = Vector3.Lerp(startPosition, endPosition, fractionOfJourney);
+                    yield return null;
+                }
+
+                // Update grid position for the final tile in the path
+                if (i == path.Count - 1)
+                {
+                    // Clear old tile
+                    if (currentTile != null)
+                    {
+                        currentTile.ClearOccupyingUnit();
+                    }
+
+                    gridPosition = targetPosition;
+                    currentTile = targetTile;
+                    currentTile.SetOccupyingUnit(this);
+                }
+            }
+
+            // Spend action points and trigger event after movement completes
+            SpendActionPoints(actionPointCost);
+            GameEvents.TriggerUnitMoved(this, oldPosition, targetPosition);
+
+            isMoving = false;
+        }
+
+        /// <summary>
         /// Resets action points at the start of a turn.
         /// </summary>
         public void ResetActionPoints(int points)
@@ -135,6 +187,13 @@ namespace TBS.Units
         /// </summary>
         public bool MoveTo(Vector2Int targetPosition, int actionPointCost = 1)
         {
+            // Prevent movement if already moving
+            if (isMoving)
+            {
+                Debug.LogWarning($"{unitName} is already moving.");
+                return false;
+            }
+
             if (!CanAffordAction(actionPointCost))
             {
                 Debug.LogWarning($"{unitName} doesn't have enough action points to move.");
@@ -156,11 +215,18 @@ namespace TBS.Units
                 return false;
             }
 
-            Vector2Int oldPosition = gridPosition;
-            UpdateGridPosition(targetPosition);
-            SpendActionPoints(actionPointCost);
+            // Get the path using pathfinding
+            List<GridTile> path = gridManager.FindPath(gridPosition, targetPosition);
+            if (path == null || path.Count == 0)
+            {
+                Debug.LogWarning($"No valid path found to {targetPosition}.");
+                return false;
+            }
 
-            GameEvents.TriggerUnitMoved(this, oldPosition, targetPosition);
+            // Start the movement animation coroutine
+            Vector2Int oldPosition = gridPosition;
+            StartCoroutine(MoveAlongPathCoroutine(path, oldPosition, targetPosition, actionPointCost));
+
             return true;
         }
 
